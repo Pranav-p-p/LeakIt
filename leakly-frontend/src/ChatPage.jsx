@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
@@ -466,11 +467,12 @@ export default function ChatPage({ group, onBack, myToken }) {
   const messagesAreaRef = useRef(null);
   const isAtBottom = useRef(true);
 
-  useEffect(() => {
-    fetchMessages();
-    connectWS();
-    return () => stompClient.current?.deactivate();
-  }, [fetchMessages, connectWS]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => {
+      fetchMessages();
+      connectWS();
+      return () => stompClient.current?.deactivate();
+    }, []);
 
   const scrollToBottom = (force = false) => {
     if (force || isAtBottom.current) {
