@@ -1,16 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
-
-// ─────────────────────────────────────────────
-//  Utility: derive a short anonymous token from
-//  a real username/email, mirroring the SHA style
-//  used in ChatPage (#A3F9BC).
-// ─────────────────────────────────────────────
-function toShortToken(str = "") {
-  let h = 5381;
-  for (let i = 0; i < str.length; i++) h = ((h << 5) + h) ^ str.charCodeAt(i);
-  const hex = (h >>> 0).toString(16).toUpperCase().padStart(6, "0");
-  return `#${hex.slice(0, 6)}`;
-}
+import { useEffect, useRef, useState } from "react";
 
 // ─────────────────────────────────────────────
 //  Constants
@@ -100,9 +88,8 @@ function OrbitSVG({ members, size, cx, cy }) {
 //  Single member node (absolutely positioned)
 // ─────────────────────────────────────────────
 function MemberNode({ member, angle, orbitR, cx, cy, hovered, onHover, onLeave }) {
-  const x = cx + orbitR * Math.cos(angle) - NODE_R; // offset by half node size
+  const x = cx + orbitR * Math.cos(angle) - NODE_R;
   const y = cy + orbitR * Math.sin(angle) - NODE_R;
-  const token = toShortToken(member.email || member.username || String(member.id));
 
   return (
     <div
@@ -133,23 +120,13 @@ function MemberNode({ member, angle, orbitR, cx, cy, hovered, onHover, onLeave }
         zIndex: 10,
       }}
     >
-      {/* Token text */}
       <span style={{
-        fontFamily: "'Courier New', monospace",
-        fontSize: "10px",
-        color: member.isAdmin ? COLORS.gold : COLORS.text,
-        letterSpacing: "0.03em",
-        lineHeight: 1.1,
-        textAlign: "center",
-        padding: "0 4px",
-        wordBreak: "break-all",
+        fontSize: member.isAdmin ? "20px" : "16px",
+        lineHeight: 1,
+        color: member.isAdmin ? COLORS.gold : "rgba(232,220,200,0.3)",
       }}>
-        {token}
+        {member.isAdmin ? "♛" : "◈"}
       </span>
-      {/* Admin crown pip */}
-      {member.isAdmin && (
-        <span style={{ fontSize: "10px", marginTop: "1px", lineHeight: 1 }}>♛</span>
-      )}
 
       {/* Hover tooltip */}
       {hovered && (
@@ -191,7 +168,7 @@ export default function GroupOrbitDetail({ group, onEnterChat, onBack }) {
   const [size, setSize] = useState(500);
   const [hoveredIdx, setHoveredIdx] = useState(null);
   const [enterHovered, setEnterHovered] = useState(false);
-  const [orbitAngle, setOrbitAngle] = useState(0); // slow continuous rotation
+  const [orbitAngle, setOrbitAngle] = useState(0);
   const rafRef = useRef(null);
   const lastTime = useRef(null);
 

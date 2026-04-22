@@ -601,28 +601,6 @@ const styles = `
   }
 `;
 
-// ─── Anonymous gothic name generator ─────────────────────────────────────────
-const ADJ = [
-  "Silent","Hollow","Ashen","Crimson","Veiled","Sunken","Pale","Bitter",
-  "Fractured","Obsidian","Forsaken","Cursed","Murky","Spectral","Waning",
-  "Dire","Sullen","Fading","Ruined","Twisted","Sombre","Gaunt","Shrouded",
-  "Blighted","Dread","Fevered","Muted","Harrowed","Stark","Scorned",
-];
-const NOUN = [
-  "Fox","Raven","Wraith","Moth","Crow","Veil","Thorn","Shade","Echo",
-  "Wisp","Omen","Pyre","Void","Mist","Bone","Specter","Knell","Ember",
-  "Gale","Rust","Dusk","Lore","Tide","Ash","Gloom","Sigil","Husk","Dirge",
-];
-
-function getAnonName(id, seed = 0) {
-  let h = 5381;
-  const key = String(id);
-  for (let i = 0; i < key.length; i++) h = ((h << 5) + h) ^ key.charCodeAt(i);
-  const base = Math.abs(h);
-  return ADJ[(base + seed) % ADJ.length] + " " + NOUN[(base + seed * 7 + 3) % NOUN.length];
-}
-// ─────────────────────────────────────────────────────────────────────────────
-
 export default function Dashboard({ user, onLogout, onEnterChat }) {
   const [groups, setGroups] = useState([]);
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -634,19 +612,9 @@ export default function Dashboard({ user, onLogout, onEnterChat }) {
   const [loading, setLoading] = useState(false);
   const [membersLoading, setMembersLoading] = useState(false);
   const [msg, setMsg] = useState(null);
-  const [copied, setCopied] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
-  // Tracks how many times each member's alias has been rerolled: { [memberId]: seed }
-  const [nameSeeds, setNameSeeds] = useState({});
 
   useEffect(() => { fetchGroups(); fetchUnread(); }, []);
-
-  // Reset name seeds whenever we switch to a different group
-  useEffect(() => { setNameSeeds({}); }, [selectedGroup?.id]);
-
-  const rerollName = (memberId) => {
-    setNameSeeds(prev => ({ ...prev, [memberId]: ((prev[memberId] || 0) + 1) }));
-  };
 
   const fetchGroups = async () => {
     setLoading(true);
@@ -706,22 +674,6 @@ export default function Dashboard({ user, onLogout, onEnterChat }) {
       setMsg({ type: "error", text: data });
     }
     setLoading(false);
-  };
-
-  const handleLeave = async () => {
-    if (!selectedGroup) return;
-    if (!window.confirm(`Leave "${selectedGroup.groupName}"?`)) return;
-    const { ok, data } = await apiFetch(`/groups/${selectedGroup.id}/leave`, { method: "DELETE" });
-    if (ok) {
-      setGroups((prev) => prev.filter((g) => g.id !== selectedGroup.id));
-      setSelectedGroup(null);
-    } else alert(data);
-  };
-
-  const copyInviteCode = () => {
-    navigator.clipboard.writeText(selectedGroup.inviteCode);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
   };
 
   const openModal = () => {
