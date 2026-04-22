@@ -3,8 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import SockJS from "sockjs-client";
 import { Client } from "@stomp/stompjs";
 
-const API = "http://localhost:8080/api";
-const WS_URL = "http://localhost:8080/ws";
+const API = `${process.env.REACT_APP_API_URL}/api`;
+const WS_URL = `${process.env.REACT_APP_API_URL}/ws`;
 const EMOJIS = ["😂", "👀", "🔥", "🤯", "💀", "🫢"];
 
 const getToken = () => localStorage.getItem("accessToken");

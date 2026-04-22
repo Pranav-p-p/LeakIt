@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import GroupOrbitDetail from "./GroupOrbitDetail";
 
-const API = "http://localhost:8080/api";
+const API = `${process.env.REACT_APP_API_URL}/api`;
 
 const getToken = () => localStorage.getItem("accessToken");
 

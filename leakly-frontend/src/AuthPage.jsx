@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const API = "http://localhost:8080/api/auth";
+const API = `${process.env.REACT_APP_API_URL}/api/auth`;
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
