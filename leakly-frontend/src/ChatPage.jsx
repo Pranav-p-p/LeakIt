@@ -470,7 +470,7 @@ export default function ChatPage({ group, onBack, myToken }) {
     fetchMessages();
     connectWS();
     return () => stompClient.current?.deactivate();
-  }, []);
+  }, [fetchMessages, connectWS]);
 
   const scrollToBottom = (force = false) => {
     if (force || isAtBottom.current) {
